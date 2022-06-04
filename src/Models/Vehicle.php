@@ -25,7 +25,7 @@ class Vehicle {
         $this->orientierung        = VehicleOrientation::tryFrom($vehicleData['orientierung']);
         $this->fahrzeugsektor      = $vehicleData['fahrzeugsektor'];
         $this->fahrzeugtyp         = $vehicleData['fahrzeugtyp'];
-        $this->wagenordnungsnummer = $vehicleData['wagenordnungsnummer'];
+        $this->wagenordnungsnummer = $vehicleData['wagenordnungsnummer'] !== '' ? $vehicleData['wagenordnungsnummer'] : null;
         $this->status              = VehicleStatus::tryFrom($vehicleData['status']);
     }
 
