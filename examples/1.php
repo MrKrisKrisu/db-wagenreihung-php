@@ -7,12 +7,15 @@ use Carbon\Carbon;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $trainNumber = 848;
-    $departure   = Carbon::create(2022, 5, 29, 17, 37);
-    $vehicles    = Wagenreihung::fetch($trainNumber, $departure);
+    $trainNumber = 1015;
+    $departure   = Carbon::create(2023, 1, 29, 18, 44);
+    $vehicleGroups    = Wagenreihung::fetch($trainNumber, $departure);
 
-    foreach($vehicles as $vehicle) {
-        echo $vehicle->fahrzeugnummer . ' (Typ: ' . $vehicle->fahrzeugtyp . ') will be in section ' . $vehicle->fahrzeugsektor . PHP_EOL;
+    foreach($vehicleGroups as $vehicleGroup) {
+        foreach($vehicleGroup->vehicles as $vehicle) {
+            echo $vehicleGroup->fahrzeuggruppebezeichnung . ': ';
+            echo $vehicle->fahrzeugnummer . ' (Typ: ' . $vehicle->fahrzeugtyp . ') will be in section ' . $vehicle->fahrzeugsektor . PHP_EOL;
+        }
     }
 } catch(TrainNotFoundException $e) {
     echo 'Train not found' . PHP_EOL;

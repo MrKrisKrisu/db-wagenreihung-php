@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use K118\DB\Exceptions\TrainNotFoundException;
 use K118\DB\Models\Vehicle;
+use K118\DB\Models\VehicleGroup;
 
 abstract class Wagenreihung {
 
@@ -31,14 +32,17 @@ abstract class Wagenreihung {
                 ]
             );
             $json     = json_decode($response->getBody()->getContents(), true);
+            $vehicleGroups = collect();
 
-            $vehicles = collect();
-
-            foreach($json['data']['istformation']['allFahrzeuggruppe'][0]['allFahrzeug'] ?? [] as $vehicle) {
-                $vehicles->push(new Vehicle($vehicle));
+            foreach($json['data']['istformation']['allFahrzeuggruppe'] as $vehicleGroupRaw) {
+                $vehicleGroup = new VehicleGroup($vehicleGroupRaw);
+                $vehicleGroups->push($vehicleGroup);
+                foreach($vehicleGroupRaw['allFahrzeug'] as $vehicle) {
+                    $vehicleGroup->vehicles->push(new Vehicle($vehicle));
+                }
             }
 
-            return $vehicles;
+            return $vehicleGroups;
         } catch(ClientException $exception) {
             if($exception->getCode() === 404) {
                 throw new TrainNotFoundException();
