@@ -18,9 +18,9 @@ abstract class Wagenreihung {
      */
     public static function fetch(int $trainNumber, Carbon $departure, int $timeout = 5) {
         try {
-            $client   = new Client();
-            $response = $client->get(
-                strtr('https://www.apps-bahn.de/wr/wagenreihung/1.0/:train/:departure', [
+            $client        = new Client();
+            $response      = $client->get(
+                strtr('https://ist-wr.noncd.db.de/wagenreihung/1.0/:train/:departure', [
                     ':train'     => $trainNumber,
                     ':departure' => $departure->format('YmdHi'),
                 ]),
@@ -31,7 +31,7 @@ abstract class Wagenreihung {
                     'timeout' => $timeout,
                 ]
             );
-            $json     = json_decode($response->getBody()->getContents(), true);
+            $json          = json_decode($response->getBody()->getContents(), true);
             $vehicleGroups = collect();
 
             foreach($json['data']['istformation']['allFahrzeuggruppe'] as $vehicleGroupRaw) {
